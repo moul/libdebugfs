@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-//#include "libdebugfs.h"
-
 #define TEST_FILE "test.bin"
 
 struct rec {
