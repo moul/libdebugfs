@@ -10,7 +10,7 @@ all		:	$(TARGETS)
 #			$(CC) -Wl,--export-dynamic -o $@ $>
 
 libdebugfs.so	:	libdebugfs.o
-			$(CC) $< -shared -nostartfiles -o $@
+			$(CC) $< -shared -nostartfiles -ldl -o $@
 
 clean		:
 			rm -f *.o *~ *.bin .??*~ *#

@@ -2,7 +2,7 @@
 
 set -x
 
-make
+make re
 echo
 LD_PRELOAD=$(pwd)/libdebugfs.so ./test
 echo

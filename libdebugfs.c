@@ -19,7 +19,9 @@
   }
 
 REAL(open, int, (char * filename, int flags, int mode), (filename, flags, mode))
+REAL(fopen, FILE *, (__const char *__restrict __filename, __const char *__restrict __modes), (__filename, __modes))
 
 int __debugfs_init(void) {
-  // do nothing
+  printf("TEST\n");
 }
+
