@@ -1,12 +1,17 @@
-all	:	test
+TARGETS	=	test
+#TARGETS	+=	libdebugfs.a
+#TARGETS	+=	libdebugfs.so
+#TARGETS	+=	libdebugfs-simple.so
+
+all	:	$(TARGETS)
 
 #test	:	test.o
 #		$(CC) -Wl,--export-dynamic -o $@ $>
 
 clean	:
-		rm -f *.o
+		rm -f *.o *~ *.bin .??*~
 
 fclean	:	clean
-		rm -f *.so *.a test
+		rm -f $(TARGETS)
 
 re	:	fclean all
