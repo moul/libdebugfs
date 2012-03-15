@@ -3,12 +3,61 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 //#include "libdebugfs.h"
+
+#define TEST_FILE "test.bin"
 
 struct rec {
   int x, y, z;
 };
+
+/**
+ * Helpers functions for
+ *   int open(char * filename, int flags, int mode)
+ *   int close(int fd)
+ *   int read(int fd, void * ptr, int numbytes)
+ *   int write(int fd, void * ptr, int numbytes)
+ *   int lseek(int fd, int position, int startpoint)
+ *   int stat(char * file, struct stat * info)
+ *
+ * http://rabbit.eng.miami.edu/info/functions/unixio.html
+ */
+int		xopen(char *filename, int flags, int mode) {
+  int		ret;
+
+  printf("[+] Opening file '%s' with flags 0x%x and mode 0x%x\n", filename, flags, mode);
+  ret = open(filename, flags, mode);
+  if (ret <= 0) {
+    printf("[-] Unable to open file\n");
+    exit(1);
+  }
+  return ret;
+}
+
+/**
+ * Helpers functions for
+ *   FILE *fopen(char filename[], char access[]);
+ *   int fclose(FILE *fileref);
+ *   int fputc(int c, FILE *fileref);
+ *   int fprintf(FILE *fileref, char format[], ...);
+ *   int fgetc(FILE *fileref);
+ *   char *fgets(char str[], int length, FILE *fileref);
+ *
+ * http://rabbit.eng.miami.edu/info/functions/stdio.html
+ */
+FILE		*xfopen(const char *path, const char *mode) {
+  FILE		*ret;
+
+  printf("[+] Fopening file '%s' with mode '%s'\n", path, mode);
+  ret = fopen(path, mode);
+  if (!ret) {
+    printf("[-] Unable to fopen file\n");
+    exit(1);
+  }
+  return ret;
+}
 
 int		main(int ac, char **av) {
   int		counter, fd;
@@ -16,13 +65,10 @@ int		main(int ac, char **av) {
   struct rec	record;
   struct stat	fileStat;
 
+  fd = xopen(TEST_FILE, O_RDONLY | O_CREAT, 0);
+
   /* Write to file */
-  printf("[+] Opening file with 'wb'\n");
-  ptr_file = fopen("test.bin", "wb");
-  if (!ptr_file) {
-    printf("[-] Unable to open file !\n");
-    return 1;
-  }
+  ptr_file = xfopen(TEST_FILE, "wb");
   printf("[+] Writing records to file\n");
   for (counter = 1; counter <= 10; counter++) {
     record.x = counter;
@@ -33,12 +79,7 @@ int		main(int ac, char **av) {
   fclose(ptr_file);
 
   /* Read from file */
-  printf("[+] Opening file with 'rb'\n");
-  ptr_file = fopen("test.bin", "rb");
-  if (!ptr_file) {
-    printf("Unable to open file!\n");
-    return 1;
-  }
+  ptr_file = xfopen(TEST_FILE, "rb");
   printf("[+] Reading records from file\n");
   for (counter = 1; counter <= 10; counter++) {
     fread(&record, sizeof(record), 1, ptr_file);
@@ -47,12 +88,7 @@ int		main(int ac, char **av) {
   fclose(ptr_file);
 
   /* Seek and read from file */
-  printf("[+] Opening file with 'rb'\n");
-  ptr_file = fopen("test.bin", "rb");
-  if (!ptr_file) {
-    printf("Unable to open file!\n");
-    return 1;
-  }
+  ptr_file = xfopen(TEST_FILE, "rb");
   printf("[+] Seeking and reading records from file in reverse order\n");
   for (counter = 9; counter >= 0; counter--) {
     fseek(ptr_file, sizeof(record) * counter, SEEK_SET);
@@ -62,12 +98,7 @@ int		main(int ac, char **av) {
   fclose(ptr_file);
 
   /* Seek to the end and rewind */
-  printf("[+] Opening file with 'rb'\n");
-  ptr_file = fopen("test.bin", "rb");
-  if (!ptr_file) {
-    printf("Unable to open file!\n");
-    return 1;
-  }
+  ptr_file = xfopen(TEST_FILE, "rb");
   printf("[+] Seeking to the end of file\n");
   fseek(ptr_file, sizeof(record), SEEK_END);
   printf("[+] Rewinding file\n");
@@ -79,12 +110,7 @@ int		main(int ac, char **av) {
   fclose(ptr_file);
 
   /* fstat file */
-  printf("[+] Opening file with 'rb'\n");
-  ptr_file = fopen("test.bin", "rb");
-  if (!ptr_file) {
-    printf("Unable to open file!\n");
-    return 1;
-  }
+  ptr_file = xfopen(TEST_FILE, "rb");
   fd = fileno(ptr_file);
   printf("  - fd is: %d\n", fd);
   printf("[+] Fstat file\n");
