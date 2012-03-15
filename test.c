@@ -1,3 +1,6 @@
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <stdio.h>
 #include "libdebugfs.h"
 
@@ -9,6 +12,7 @@ int		main(int ac, char **av) {
   int		counter;
   FILE		*ptr_file;
   struct rec	record;
+  struct stat	fileStat;
 
   /* Write to file */
   printf("[+] Opening file with 'wb'\n");
@@ -71,6 +75,24 @@ int		main(int ac, char **av) {
     printf("  - x: %d, y: %d, z: %d\n", record.x, record.y, record.z);
   }
   fclose(ptr_file);
+
+  /* fstat file */
+  printf("[+] Opening file with 'rb'\n");
+  ptr_file = fopen("test.bin", "rb");
+  if (!ptr_file) {
+    printf("Unable to open file!\n");
+    return 1;
+  }
+  printf("[+] Fstat file\n");
+  if (fstat(ptr_file, &fileStat) < 0) {
+    printf("Unable to fstat file!\n");
+    return 1;
+  }
+  printf("File Size: \t\t%d bytes\n", fileStat.st_size);
+  printf("Number of Links: \t%d\n", fileStat.st_nlink);
+  printf("File inode: \t\t%d\n", fileStat.st_ino);
+  fclose(ptr_file);
+
 
   return 0;
 }
