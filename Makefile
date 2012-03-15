@@ -13,7 +13,7 @@ libdebugfs.so	:	libdebugfs.o
 			$(CC) $< -shared -nostartfiles -o $@
 
 clean		:
-			rm -f *.o *~ *.bin .??*~
+			rm -f *.o *~ *.bin .??*~ *#
 
 fclean		:	clean
 			rm -f $(TARGETS)
