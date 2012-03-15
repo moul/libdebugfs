@@ -2,14 +2,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "libdebugfs.h"
+#include <stdlib.h>
+
+//#include "libdebugfs.h"
 
 struct rec {
   int x, y, z;
 };
 
 int		main(int ac, char **av) {
-  int		counter;
+  int		counter, fd;
   FILE		*ptr_file;
   struct rec	record;
   struct stat	fileStat;
@@ -83,14 +85,29 @@ int		main(int ac, char **av) {
     printf("Unable to open file!\n");
     return 1;
   }
+  fd = fileno(ptr_file);
+  printf("  - fd is: %d\n", fd);
   printf("[+] Fstat file\n");
-  if (fstat(ptr_file, &fileStat) < 0) {
+  if (fstat(fd, &fileStat) < 0) {
     printf("Unable to fstat file!\n");
     return 1;
   }
-  printf("File Size: \t\t%d bytes\n", fileStat.st_size);
-  printf("Number of Links: \t%d\n", fileStat.st_nlink);
-  printf("File inode: \t\t%d\n", fileStat.st_ino);
+  printf("  - File Size: \t\t%d bytes\n", (int)fileStat.st_size);
+  printf("  - Number of Links: \t%d\n", (int)fileStat.st_nlink);
+  printf("  - File inode: \t\t%d\n", (int)fileStat.st_ino);
+  printf("  - File Permissions: \t");
+  printf((S_ISDIR(fileStat.st_mode)) ? "d" : "-");
+  printf((fileStat.st_mode & S_IRUSR) ? "r" : "-");
+  printf((fileStat.st_mode & S_IWUSR) ? "w" : "-");
+  printf((fileStat.st_mode & S_IXUSR) ? "x" : "-");
+  printf((fileStat.st_mode & S_IRGRP) ? "r" : "-");
+  printf((fileStat.st_mode & S_IWGRP) ? "w" : "-");
+  printf((fileStat.st_mode & S_IXGRP) ? "x" : "-");
+  printf((fileStat.st_mode & S_IROTH) ? "r" : "-");
+  printf((fileStat.st_mode & S_IWOTH) ? "w" : "-");
+  printf((fileStat.st_mode & S_IXOTH) ? "x" : "-");
+  printf("\n\n");
+
   fclose(ptr_file);
 
 
