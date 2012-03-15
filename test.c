@@ -15,12 +15,12 @@ struct rec {
 
 /**
  * Helpers functions for
- *   int open(char * filename, int flags, int mode)
- *   int close(int fd)
- *   int read(int fd, void * ptr, int numbytes)
- *   int write(int fd, void * ptr, int numbytes)
- *   int lseek(int fd, int position, int startpoint)
- *   int stat(char * file, struct stat * info)
+ *   int	open(char * filename, int flags, int mode)
+ *   int	close(int fd)
+ *   int	read(int fd, void * ptr, int numbytes)
+ *   int	write(int fd, void * ptr, int numbytes)
+ *   int	lseek(int fd, int position, int startpoint)
+ *   int	stat(char * file, struct stat * info)
  *
  * http://rabbit.eng.miami.edu/info/functions/unixio.html
  */
@@ -31,6 +31,7 @@ int		xopen(char *filename, int flags, int mode) {
   ret = open(filename, flags, mode);
   if (ret <= 0) {
     printf("[-] Unable to open file\n");
+    perror(__func__);
     exit(1);
   }
   return ret;
@@ -38,12 +39,12 @@ int		xopen(char *filename, int flags, int mode) {
 
 /**
  * Helpers functions for
- *   FILE *fopen(char filename[], char access[]);
- *   int fclose(FILE *fileref);
- *   int fputc(int c, FILE *fileref);
- *   int fprintf(FILE *fileref, char format[], ...);
- *   int fgetc(FILE *fileref);
- *   char *fgets(char str[], int length, FILE *fileref);
+ *   FILE	*fopen(char filename[], char access[]);
+ *   int	fclose(FILE *fileref);
+ *   int	fputc(int c, FILE *fileref);
+ *   int	fprintf(FILE *fileref, char format[], ...);
+ *   int	fgetc(FILE *fileref);
+ *   char	*fgets(char str[], int length, FILE *fileref);
  *
  * http://rabbit.eng.miami.edu/info/functions/stdio.html
  */
@@ -54,11 +55,15 @@ FILE		*xfopen(const char *path, const char *mode) {
   ret = fopen(path, mode);
   if (!ret) {
     printf("[-] Unable to fopen file\n");
+    perror(__func__);
     exit(1);
   }
   return ret;
 }
 
+/**
+ * test main function
+ */
 int		main(int ac, char **av) {
   int		counter, fd;
   FILE		*ptr_file;
@@ -135,7 +140,6 @@ int		main(int ac, char **av) {
   printf("\n\n");
 
   fclose(ptr_file);
-
 
   return 0;
 }
