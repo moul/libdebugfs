@@ -1,17 +1,21 @@
-TARGETS	=	test
+TARGETS		=	test
 #TARGETS	+=	libdebugfs.a
-#TARGETS	+=	libdebugfs.so
+TARGETS		+=	libdebugfs.so
 #TARGETS	+=	libdebugfs-simple.so
+CFLAGS		+=	-fPIC
 
-all	:	$(TARGETS)
+all		:	$(TARGETS)
 
-#test	:	test.o
-#		$(CC) -Wl,--export-dynamic -o $@ $>
+#test		:	test.o
+#			$(CC) -Wl,--export-dynamic -o $@ $>
 
-clean	:
-		rm -f *.o *~ *.bin .??*~
+libdebugfs.so	:	libdebugfs.o
+			$(CC) $< -shared -nostartfiles -o $@
 
-fclean	:	clean
-		rm -f $(TARGETS)
+clean		:
+			rm -f *.o *~ *.bin .??*~
 
-re	:	fclean all
+fclean		:	clean
+			rm -f $(TARGETS)
+
+re		:	fclean all
