@@ -68,6 +68,7 @@ int		main(int ac, char **av) {
   FILE		*ptr_file;
   struct rec	record;
   struct stat	fileStat;
+  char		permissions[11];
 
   fd = xopen(TEST_FILE, O_RDONLY | O_CREAT, 0755);
 
@@ -113,6 +114,28 @@ int		main(int ac, char **av) {
   }
   fclose(ptr_file);
 
+  /* stat file */
+  printf("[+] Stat file\n");
+  if (stat(TEST_FILE, &fileStat) < 0) {
+    printf("Unable to stat file!\n");
+    return 1;
+  }
+  printf("  - File Size: \t\t%d bytes\n", (int)fileStat.st_size);
+  printf("  - Number of Links: \t%d\n", (int)fileStat.st_nlink);
+  printf("  - File inode: \t\t%d\n", (int)fileStat.st_ino);
+  permissions[0] = (S_ISDIR(fileStat.st_mode)) ? 'd' : '-';
+  permissions[1] = (fileStat.st_mode & S_IRUSR) ? 'r' : '-';
+  permissions[2] = (fileStat.st_mode & S_IWUSR) ? 'w' : '-';
+  permissions[3] = (fileStat.st_mode & S_IXUSR) ? 'x' : '-';
+  permissions[4] = (fileStat.st_mode & S_IRGRP) ? 'r' : '-';
+  permissions[5] = (fileStat.st_mode & S_IWGRP) ? 'w' : '-';
+  permissions[6] = (fileStat.st_mode & S_IXGRP) ? 'x' : '-';
+  permissions[7] = (fileStat.st_mode & S_IROTH) ? 'r' : '-';
+  permissions[8] = (fileStat.st_mode & S_IWOTH) ? 'w' : '-';
+  permissions[9] = (fileStat.st_mode & S_IXOTH) ? 'x' : '-';
+  permissions[10] = 0;
+  printf("  - File Permissions: %s\n", permissions);
+
   /* fstat file */
   ptr_file = xfopen(TEST_FILE, "rb");
   fd = fileno(ptr_file);
@@ -125,7 +148,6 @@ int		main(int ac, char **av) {
   printf("  - File Size: \t\t%d bytes\n", (int)fileStat.st_size);
   printf("  - Number of Links: \t%d\n", (int)fileStat.st_nlink);
   printf("  - File inode: \t\t%d\n", (int)fileStat.st_ino);
-  char permissions[11];
   permissions[0] = (S_ISDIR(fileStat.st_mode)) ? 'd' : '-';
   permissions[1] = (fileStat.st_mode & S_IRUSR) ? 'r' : '-';
   permissions[2] = (fileStat.st_mode & S_IWUSR) ? 'w' : '-';
