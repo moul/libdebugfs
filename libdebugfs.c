@@ -8,7 +8,7 @@
 void		__debugfs_init(void);
 void		__debugfs_atexit(void);
 
-#define		REAL(FUNC, RET_TYPE, ARGS_PROTO, ARGS_PARAM)		\
+#define			REAL(FUNC, RET_TYPE, ARGS_PROTO, ARGS_PARAM)	\
   RET_TYPE              __real_ ## FUNC ARGS_PROTO {			\
     static RET_TYPE     (*func)ARGS_PROTO;                              \
     									\
@@ -23,10 +23,10 @@ void		__debugfs_atexit(void);
     return (__real_ ## FUNC ARGS_PARAM);				\
   }
 
-REAL(open, int, (char * filename, int flags, int mode), (filename, flags, mode))
-REAL(fopen, FILE *, (__const char *__restrict __filename, __const char *__restrict __modes), (__filename, __modes))
+REAL(open,	int,	(char * filename, int flags, int mode),						(filename, flags, mode))
+REAL(fopen,	FILE *,	(__const char *__restrict __filename, __const char *__restrict __modes),	(__filename, __modes))
 
-void	__debugfs_atexit(void) {
+void		__debugfs_atexit(void) {
   printf("[+] Exiting debugfs\n");
 }
 
