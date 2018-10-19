@@ -1,6 +1,8 @@
 Debug FS library
 ================
 
+[![GuardRails badge](https://badges.production.guardrails.io/moul/libdebugfs.svg)](https://www.guardrails.io)
+
 by Manfred Touron
 
 Compiling it
